@@ -135,15 +135,35 @@ Responsibilities:
 
 # GitHub Collaboration Guide
 
-**Important:** Every member must work on their assigned branch. Do not directly modify the `main` branch.
+**Important:** Every member will create their own branch. You do not need to create everyone's feature branches beforehand.
+
+We will follow this workflow:
+
+```text
+                 main
+                   |
+              integration
+                   |
+       ┌───────────┼────────────┐
+       |           |            |
+   frontend    task-backend   auth-database
+       |           |            |
+       └───────────┴────────────┘
+                   |
+              Pull Requests
+                   |
+              integration
+                   |
+                  main
+```
 
 ## Step 1 – Install Git
 
-Download Git from:
+Download Git:
 
 https://git-scm.com/downloads
 
-After installation, open the terminal and check:
+Check installation:
 
 ```bash
 git --version
@@ -151,13 +171,13 @@ git --version
 
 ## Step 2 – Clone the Repository
 
-Every member must run:
+Every member must clone the repository:
 
 ```bash
 git clone https://github.com/YOUR_GITHUB_USERNAME/To-do-project-GRP19.git
 ```
 
-Move into the project folder:
+Enter the project folder:
 
 ```bash
 cd To-do-project-GRP19
@@ -165,66 +185,77 @@ cd To-do-project-GRP19
 
 Replace `YOUR_GITHUB_USERNAME` with the repository owner's GitHub username.
 
-## Step 3 – Switch to Your Assigned Branch
+## Step 3 – Create Your Own Branch
 
-Each member must use their own branch.
-
-**Frontend Developer:**
-
-```bash
-git checkout feature/frontend
-```
-
-**Team Leader:**
-
-```bash
-git checkout integration
-```
-
-**Task Backend Developer:**
-
-```bash
-git checkout feature/task-management
-```
-
-**Authentication and Database Developer:**
-
-```bash
-git checkout feature/auth-database
-```
-
-**Testing and Documentation Member:**
-
-```bash
-git checkout feature/testing-docs
-```
-
-If the branch is not available locally, run:
+First, everyone must get the latest branches:
 
 ```bash
 git fetch origin
-git checkout -b YOUR_BRANCH_NAME origin/YOUR_BRANCH_NAME
 ```
 
-Replace `YOUR_BRANCH_NAME` with your assigned branch.
+**Important:** The team leader must create and push the `integration` branch before other members start this step.
+
+### Member 1 – Frontend Developer
+
+```bash
+git switch -c feature/frontend origin/integration
+```
+
+### Member 2 – Team Leader
+
+Create the integration branch from main:
+
+```bash
+git switch main
+git pull origin main
+git switch -c integration
+git push -u origin integration
+```
+
+### Member 3 – Task Management Backend
+
+```bash
+git switch -c feature/task-management origin/integration
+```
+
+### Member 4 – Authentication and Database
+
+```bash
+git switch -c feature/auth-database origin/integration
+```
+
+### Member 5 – Testing and Documentation
+
+```bash
+git switch -c feature/testing-docs origin/integration
+```
+
+**What does this command do?**
+
+- `git switch -c` creates a new branch and switches to it.
+- `origin/integration` uses the latest remote integration branch as the starting point.
+- Every member now has their own independent working branch.
 
 ## Step 4 – Before Starting Work
 
-Always get the latest changes from your assigned branch:
+Always get the latest changes from your branch:
 
 ```bash
-git pull origin YOUR_BRANCH_NAME
+git pull
 ```
 
-For example:
+If you need the latest changes from the integration branch, first coordinate with the team leader and then run:
 
 ```bash
-git pull origin feature/frontend
+git fetch origin
+git merge origin/integration
 ```
 
-## Step 5 – After Completing Your Work
+Resolve any conflicts before continuing.
 
-Check which files you modified:
+## Step 5 – Save and Push Your Work
+
+After making changes, check your files:
 
 ```bash
 git status
@@ -236,38 +267,44 @@ Add your changes:
 git add .
 ```
 
-Commit your changes with a meaningful message:
+Commit your changes:
 
 ```bash
 git commit -m "Add login page"
 ```
 
-Push your changes:
+Push your branch to GitHub for the first time:
 
 ```bash
-git push origin YOUR_BRANCH_NAME
+git push -u origin YOUR_BRANCH_NAME
 ```
 
 For example:
 
 ```bash
-git push origin feature/frontend
+git push -u origin feature/frontend
+```
+
+After the first push, you can simply use:
+
+```bash
+git push
 ```
 
 ## Step 6 – Create a Pull Request
 
-After pushing your code:
+After pushing your branch:
 
 1. Open the GitHub repository.
-2. Go to the **Pull Requests** section.
+2. Go to **Pull Requests**.
 3. Click **New Pull Request**.
-4. Select your branch as the source branch.
-5. Select `integration` as the target branch.
-6. Add a short description of your work.
+4. Select your feature branch as the source.
+5. Select `integration` as the target.
+6. Add a short description of your changes.
 7. Create the Pull Request.
 8. Inform the team leader.
 
-The team leader will review and merge the code into `integration`.
+The team leader will review and merge the changes into `integration`.
 
 After testing the complete application, the team leader will merge `integration` into `main`.
 
@@ -276,13 +313,13 @@ After testing the complete application, the team leader will merge `integration`
 # Important Rules for Everyone
 
 1. Work only on your assigned branch.
-2. Never push directly to `main`.
+2. Never push directly to `main` or `integration`.
 3. Pull the latest changes before starting work.
 4. Commit your code regularly.
 5. Do not modify another member's files without discussing it.
 6. Inform the team before changing shared files such as `main.py` or `database.py`.
 7. Never upload passwords, database credentials or `.env` files to GitHub.
-8. If you face an error, share the error message with the team instead of making random changes.
+8. If you face an error, share the error message with the team.
 9. Test your work before creating a Pull Request.
 10. Communicate with the team regularly.
 
@@ -322,7 +359,7 @@ Start the backend:
 uvicorn app.main:app --reload
 ```
 
-Open Swagger API documentation:
+Swagger API documentation:
 
 http://localhost:8000/docs
 
