@@ -1,163 +1,34 @@
-# To-Do Project – GRP19
+## 7. GitHub Collaboration Guide
 
-A simple To-Do application that allows users to manage their daily tasks.
+We will use Git and GitHub so everyone can work on their assigned tasks independently.
 
-## Features
+### Branch Structure
 
-- User registration and login
-- Add new tasks
-- View individual tasks
-- View all tasks
-- Update task details
-- Delete tasks
-- Update task status
-- Each user can access only their own tasks
+We will maintain three types of branches:
 
-## Technology Stack
-
-| Part | Technology |
+| Branch | Purpose |
 |---|---|
-| Frontend | React |
-| Backend | Python, FastAPI |
-| Database | PostgreSQL |
-| API Testing | Postman / Swagger |
-| Version Control | Git and GitHub |
+| `main` | Final stable application |
+| `integration` | Combines everyone's work |
+| Personal branch | Each member's individual work |
 
-## Project Structure
+### Branch Naming Convention
 
-```text
-To-do-project-GRP19/
-│
-├── frontend/
-│
-├── backend/
-│   └── app/
-│       ├── main.py
-│       ├── database.py
-│       ├── models/
-│       │   ├── user.py
-│       │   └── task.py
-│       ├── schemas/
-│       │   ├── user.py
-│       │   └── task.py
-│       ├── routes/
-│       │   ├── auth.py
-│       │   └── tasks.py
-│       └── services/
-│
-├── docs/
-│   └── API_DOCUMENTATION.md
-│
-├── .env.example
-├── .gitignore
-└── README.md
-```
+Every member must create a branch using their own name.
 
-*Note: This is the planned structure. Update it if the actual implementation changes.*
-
-## Task Status
-
-| Status | Meaning |
+| Team Member | Branch Name |
 |---|---|
-| INCOMPLETE | Task is not completed |
-| PARTIALLY_COMPLETED | Task is in progress |
-| COMPLETED | Task is finished |
+| Amit | `amit` |
+| Arathi | `arathi` |
+| Vikas | `vikas` |
+| Member 5 | `member5` |
+| Srysha | `srysha` |
 
----
+**Important:** Use lowercase names without spaces.
 
-# Team Members and Responsibilities
+If a member has multiple responsibilities, they should complete all their assigned work in the same personal branch.
 
-### Member 1 – Frontend Developer
-
-**Branch:** `feature/frontend`
-
-Responsibilities:
-- Create registration and login pages.
-- Create the main dashboard.
-- Display all tasks.
-- Create add and edit task forms.
-- Add buttons for delete and status updates.
-- Connect frontend with backend APIs.
-
-### Member 2 – Backend Coordinator / Team Leader
-
-**Branch:** `integration`
-
-Responsibilities:
-- Set up the FastAPI project.
-- Maintain the project structure.
-- Coordinate backend development.
-- Define API endpoints and request/response formats.
-- Review and merge pull requests.
-- Integrate frontend and backend.
-- Test the complete application.
-
-### Member 3 – Task Management Backend
-
-**Branch:** `feature/task-management`
-
-Responsibilities:
-- Create the task model and schema.
-- Implement add task API.
-- Implement view task API.
-- Implement view all tasks API.
-- Implement update task API.
-- Implement delete task API.
-- Implement task status update API.
-
-### Member 4 – Authentication and Database
-
-**Branch:** `feature/auth-database`
-
-Responsibilities:
-- Configure PostgreSQL connection.
-- Create the user model.
-- Implement user registration.
-- Implement user login.
-- Hash user passwords.
-- Generate and verify JWT tokens.
-- Protect APIs so users can access only their own tasks.
-
-### Member 5 – Testing and Documentation
-
-**Branch:** `feature/testing-docs`
-
-Responsibilities:
-- Test registration and login.
-- Test all task APIs using Postman.
-- Check add, view, update and delete operations.
-- Test all three task statuses.
-- Check that one user cannot access another user's tasks.
-- Report bugs to the team.
-- Prepare project documentation and README.
-
----
-
-# GitHub Collaboration Guide
-
-**Important:** Every member will create their own branch. You do not need to create everyone's feature branches beforehand.
-
-We will follow this workflow:
-
-```text
-                 main
-                   |
-              integration
-                   |
-       ┌───────────┼────────────┐
-       |           |            |
-   frontend    task-backend   auth-database
-       |           |            |
-       └───────────┴────────────┘
-                   |
-              Pull Requests
-                   |
-              integration
-                   |
-                  main
-```
-
-## Step 1 – Install Git
+### Step 1 – Install Git
 
 Download Git:
 
@@ -169,7 +40,7 @@ Check installation:
 git --version
 ```
 
-## Step 2 – Clone the Repository
+### Step 2 – Clone the Repository
 
 Every member must clone the repository:
 
@@ -185,25 +56,9 @@ cd To-do-project-GRP19
 
 Replace `YOUR_GITHUB_USERNAME` with the repository owner's GitHub username.
 
-## Step 3 – Create Your Own Branch
+### Step 3 – Create the Integration Branch
 
-First, everyone must get the latest branches:
-
-```bash
-git fetch origin
-```
-
-**Important:** The team leader must create and push the `integration` branch before other members start this step.
-
-### Member 1 – Frontend Developer
-
-```bash
-git switch -c feature/frontend origin/integration
-```
-
-### Member 2 – Team Leader
-
-Create the integration branch from main:
+Amit must create and push the integration branch first.
 
 ```bash
 git switch main
@@ -212,48 +67,56 @@ git switch -c integration
 git push -u origin integration
 ```
 
-### Member 3 – Task Management Backend
+Other members should wait until the `integration` branch is available on GitHub.
+
+### Step 4 – Create Your Own Branch
+
+First, get the latest remote branches:
 
 ```bash
-git switch -c feature/task-management origin/integration
+git fetch origin
 ```
 
-### Member 4 – Authentication and Database
+Now create your personal branch from `origin/integration`.
+
+**Amit:**
 
 ```bash
-git switch -c feature/auth-database origin/integration
+git switch -c amit origin/integration
 ```
 
-### Member 5 – Testing and Documentation
+**Arathi:**
 
 ```bash
-git switch -c feature/testing-docs origin/integration
+git switch -c arathi origin/integration
+```
+
+**Vikas:**
+
+```bash
+git switch -c vikas origin/integration
+```
+
+**Member 5:**
+
+```bash
+git switch -c member5 origin/integration
+```
+
+**Srysha:**
+
+```bash
+git switch -c srysha origin/integration
 ```
 
 **What does this command do?**
 
 - `git switch -c` creates a new branch and switches to it.
-- `origin/integration` uses the latest remote integration branch as the starting point.
-- Every member now has their own independent working branch.
+- The first name is your new personal branch.
+- `origin/integration` means your branch starts from the latest remote integration branch.
+- Everyone can now work independently.
 
-## Step 4 – Before Starting Work
-
-Always get the latest changes from your branch:
-
-```bash
-git pull
-```
-
-If you need the latest changes from the integration branch, first coordinate with the team leader and then run:
-
-```bash
-git fetch origin
-git merge origin/integration
-```
-
-Resolve any conflicts before continuing.
-
-## Step 5 – Save and Push Your Work
+### Step 5 – Save and Push Your Work
 
 After making changes, check your files:
 
@@ -270,121 +133,83 @@ git add .
 Commit your changes:
 
 ```bash
-git commit -m "Add login page"
+git commit -m "Add login functionality"
 ```
 
-Push your branch to GitHub for the first time:
+Push your personal branch to GitHub for the first time.
+
+Example for Vikas:
 
 ```bash
-git push -u origin YOUR_BRANCH_NAME
+git push -u origin vikas
 ```
 
-For example:
+Example for Arathi:
 
 ```bash
-git push -u origin feature/frontend
+git push -u origin arathi
 ```
 
-After the first push, you can simply use:
+For future updates, simply use:
 
 ```bash
+git add .
+git commit -m "Update task functionality"
 git push
 ```
 
-## Step 6 – Create a Pull Request
+### Step 6 – Create a Pull Request
 
 After pushing your branch:
 
 1. Open the GitHub repository.
 2. Go to **Pull Requests**.
 3. Click **New Pull Request**.
-4. Select your feature branch as the source.
+4. Select your personal branch as the source.
 5. Select `integration` as the target.
-6. Add a short description of your changes.
+6. Write a short description of your changes.
 7. Create the Pull Request.
-8. Inform the team leader.
+8. Inform Amit.
 
-The team leader will review and merge the changes into `integration`.
+Amit will review the code and merge the Pull Request into `integration`.
 
-After testing the complete application, the team leader will merge `integration` into `main`.
+After testing the complete application, the stable code will be merged into `main`.
 
----
+### Branch Workflow
 
-# Important Rules for Everyone
-
-1. Work only on your assigned branch.
-2. Never push directly to `main` or `integration`.
-3. Pull the latest changes before starting work.
-4. Commit your code regularly.
-5. Do not modify another member's files without discussing it.
-6. Inform the team before changing shared files such as `main.py` or `database.py`.
-7. Never upload passwords, database credentials or `.env` files to GitHub.
-8. If you face an error, share the error message with the team.
-9. Test your work before creating a Pull Request.
-10. Communicate with the team regularly.
-
----
-
-# Backend Setup
-
-Go to the backend folder:
-
-```bash
-cd backend
-```
-
-Create a virtual environment:
-
-```bash
-python -m venv venv
-```
-
-Activate it on Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Configure your `.env` file with the required database and authentication settings.
-
-Start the backend:
-
-```bash
-uvicorn app.main:app --reload
-```
-
-Swagger API documentation:
-
-http://localhost:8000/docs
-
-# Frontend Setup
-
-Open another terminal:
-
-```bash
-cd frontend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start the frontend:
-
-```bash
-npm run dev
+```text
+                    main
+                      |
+                 integration
+                      |
+          ┌───────────┼───────────┐
+          |           |           |
+         amit       arathi       vikas
+          |           |           |
+        member5      srysha       |
+          |           |           |
+          └───────────┴───────────┘
+                      |
+                Pull Requests
+                      |
+                 integration
+                      |
+                     main
 ```
 
 ---
 
-# Project Goal
+## 8. Important Rules for Everyone
 
-To develop a simple, functional and user-friendly To-Do application where users can securely manage their daily tasks.
+1. Work only on your personal branch.
+2. Never push directly to `main`.
+3. Do not push directly to `integration`.
+4. Pull the latest changes before starting work.
+5. Commit your code regularly.
+6. Do not modify another member's assigned files without discussion.
+7. Coordinate before modifying shared files such as `main.py` and `database.py`.
+8. Never upload passwords, database credentials, or `.env` files to GitHub.
+9. Test your code before creating a Pull Request.
+10. If you face an error, share the complete error message with the team.
+11. Do not change API endpoints or request/response formats without informing the team.
+12. Ask questions whenever you are stuck. Everyone is learning.
