@@ -1,4 +1,4 @@
-# To-Do Project – GRP19
+x# To-Do Project – GRP19
 
 A simple To-Do application that allows users to register, log in, and manage their daily tasks.
 
@@ -125,10 +125,10 @@ To-do-project-GRP19/
 | `backend/app/main.py` | Amit | Configure FastAPI and register routers |
 | `backend/app/schemas/` | Coordinate with Amit | Define API request and response formats |
 | `backend/app/routes/tasks.py` | Amit, Arathi | Implement task management APIs |
-| `backend/app/routes/auth.py` | Member 5 | Implement registration and login |
-| `backend/app/database.py` | Member 5 | Configure PostgreSQL connection |
-| `backend/app/services/auth_service.py` | Member 5 | Password hashing and JWT-related logic |
-| `backend/app/dependencies.py` | Member 5 | Authentication dependency for protected APIs |
+| `backend/app/routes/auth.py` | Krishnaja | Implement registration and login |
+| `backend/app/database.py` | Krishnaja | Configure PostgreSQL connection |
+| `backend/app/services/auth_service.py` | Krishnaja | Password hashing and JWT-related logic |
+| `backend/app/dependencies.py` | Krishnaja | Authentication dependency for protected APIs |
 | `frontend/src/pages/` | Vikas | Develop React application pages |
 | `frontend/src/components/` | Vikas | Create reusable frontend components |
 | `frontend/src/services/api.js` | Arathi | Connect frontend with backend APIs |
@@ -167,7 +167,7 @@ To-do-project-GRP19/
 - Validate task information.
 - Ensure users can access only their own tasks.
 
-### Member 5 – Authentication and Database
+### Krishnaja – Authentication and Database
 
 **Responsibilities:**
 
@@ -323,7 +323,7 @@ We will use Git and GitHub so everyone can work on their assigned tasks without 
 | `integration` | Combined team development |
 | `feature/database-api-setup` | Amit – Database design and FastAPI setup |
 | `feature/task-management` | Amit and Arathi – Task APIs |
-| `feature/auth-database` | Member 5 – Authentication and database |
+| `feature/auth-database` | Krishnaja – Authentication and database |
 | `feature/frontend` | Vikas – React frontend |
 | `feature/frontend-integration` | Arathi – Frontend/backend integration |
 | `feature/testing-docs` | Srysha – Testing and documentation |
@@ -385,7 +385,7 @@ Example for Vikas:
 git switch -c feature/frontend origin/integration
 ```
 
-Example for Member 5:
+Example for Krishnaja:
 
 ```bash
 git switch -c feature/auth-database origin/integration
@@ -479,7 +479,7 @@ Every member must create a branch using their own name.
 | Amit | `amit` |
 | Arathi | `arathi` |
 | Vikas | `vikas` |
-| Member 5 | `member5` |
+| Krishnaja | `krishnaja` |
 | Srysha | `srysha` |
 
 **Important:** Use lowercase names without spaces.
@@ -555,7 +555,7 @@ git switch -c arathi origin/integration
 git switch -c vikas origin/integration
 ```
 
-**Member 5:**
+**Krishnaja:**
 
 ```bash
 git switch -c member5 origin/integration
@@ -644,7 +644,7 @@ After testing the complete application, the stable code will be merged into `mai
           |           |           |
          amit       arathi       vikas
           |           |           |
-        member5      srysha       |
+        Krishnaja      srysha       |
           |           |           |
           └───────────┴───────────┘
                       |
