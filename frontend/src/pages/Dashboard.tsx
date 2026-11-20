@@ -2,7 +2,6 @@ import {
   CalendarDays,
   Check,
   ChevronRight,
-  MoreHorizontal,
   Plus,
   TrendingUp,
 } from 'lucide-react'
@@ -25,12 +24,8 @@ export default function Dashboard({
     (task) => task.status === 'Completed'
   ).length
 
-  const inProgress = tasks.filter(
-    (task) => task.status === 'In Progress'
-  ).length
-
-  const overdue = tasks.filter(
-    (task) => task.status === 'Overdue'
+  const pending = tasks.filter(
+    (task) => task.status === 'Pending'
   ).length
 
   const progress =
@@ -38,7 +33,7 @@ export default function Dashboard({
       ? Math.round((completed / tasks.length) * 100)
       : 0
 
-  const todayTasks = tasks.slice(0, 5)
+  const recentTasks = tasks.slice(0, 5)
 
   return (
     <div className="page-container">
@@ -50,7 +45,7 @@ export default function Dashboard({
           <div className="eyebrow">YOUR PRODUCTIVITY SPACE</div>
 
           <h1>
-            Good morning, Vikas <span className="wave">👋</span>
+            Welcome back <span className="wave">👋</span>
           </h1>
 
           <p>
@@ -113,15 +108,15 @@ export default function Dashboard({
           </div>
 
           <div className="stat-label">
-            In Progress
+            Pending
           </div>
 
           <div className="stat-value">
-            {inProgress}
+            {pending}
           </div>
 
           <div className="stat-description">
-            Currently working on
+            Tasks to complete
           </div>
         </div>
 
@@ -131,15 +126,15 @@ export default function Dashboard({
           </div>
 
           <div className="stat-label">
-            Overdue
+            Scheduled
           </div>
 
           <div className="stat-value">
-            {overdue}
+            {tasks.filter(task => task.dueDate).length}
           </div>
 
           <div className="stat-description">
-            Need your attention
+            Tasks with a due date
           </div>
         </div>
 
@@ -154,7 +149,7 @@ export default function Dashboard({
           <div className="section-heading">
 
             <div>
-              <h2>Today's Tasks</h2>
+              <h2>Recent Tasks</h2>
               <p>
                 Stay on top of your priorities.
               </p>
@@ -172,7 +167,7 @@ export default function Dashboard({
 
           <div className="dashboard-task-list">
 
-            {todayTasks.length === 0 ? (
+            {recentTasks.length === 0 ? (
               <div className="empty-task-state">
                 <div className="empty-task-icon">
                   <Check size={22} />
@@ -194,7 +189,7 @@ export default function Dashboard({
                 </button>
               </div>
             ) : (
-              todayTasks.map((task) => {
+              recentTasks.map((task) => {
 
                 const isCompleted =
                   task.status === 'Completed'
@@ -243,11 +238,7 @@ export default function Dashboard({
 
                       <div className="dashboard-task-meta">
                         <CalendarDays size={13} />
-                        <span>{task.dueDate}</span>
-
-                        <span className="meta-dot">•</span>
-
-                        <span>{task.project}</span>
+                        <span>{task.dueDate || 'No due date'}</span>
                       </div>
 
                     </div>
@@ -263,14 +254,6 @@ export default function Dashboard({
                       </span>
                     </div>
 
-                    {/* MENU */}
-                    <button
-                      className="task-more-btn"
-                      aria-label="Task options"
-                    >
-                      <MoreHorizontal size={19} />
-                    </button>
-
                   </div>
                 )
               })
@@ -285,9 +268,9 @@ export default function Dashboard({
 
           <div className="section-heading">
             <div>
-              <h2>Weekly Progress</h2>
+              <h2>Completion Progress</h2>
               <p>
-                Your productivity this week.
+                Your completed tasks at a glance.
               </p>
             </div>
 

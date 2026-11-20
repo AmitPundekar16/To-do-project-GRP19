@@ -1,18 +1,13 @@
-# Taskly — UI/UX Submission
+# Taskly UI/UX Design
 
-Prepared specifically for the internship UI/UX requirements.
+This folder of documentation describes the design references and visual handoff for Taskly.
 
-- Branch: `feature/ui-ux`
-- Required Figma screens: Login, Dashboard, Add Task, Task List
-- Documentation: `docs/ui-ux/`
-- Screenshots/mockups: `docs/ui-ux/screenshots/`
-- Wireframe overview: `docs/ui-ux/wireframes/`
-- Shared theme: `frontend/styles/theme.css`
+- Design specifications: `docs/ui-ux/design-spec.md`
+- Style guide: `docs/ui-ux/style-guide.md`
+- Handoff notes: `docs/ui-ux/handoff.md`
+- Screenshots and wireframes: `docs/ui-ux/`
+- Shared theme tokens: `frontend/styles/theme.css`
+- React implementation: `frontend/src/`
 - Figma source: https://www.figma.com/design/XLTOX4GvZjBRrfjk2d9eY6
 
-Run:
-```bash
-cd frontend
-npm install
-npm run dev
-```
+For running the complete frontend and backend together, follow the root [README](README.md).

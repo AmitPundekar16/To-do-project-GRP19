@@ -1,8 +1,8 @@
-import { FormEvent, useState } from 'react'
+import { useState } from 'react'
+import type { FormEvent } from 'react'
 import {
   CalendarDays,
   Flag,
-  Folder,
   Plus,
   X,
 } from 'lucide-react'
@@ -10,12 +10,14 @@ import type { Task } from '../types'
 
 type Props = {
   task: Task | null
+  error?: string
   onClose: () => void
-  onSave: (data: Omit<Task, 'id'>) => void
+  onSave: (data: Omit<Task, 'id'>) => Promise<void>
 }
 
 export default function TaskModal({
   task,
+  error,
   onClose,
   onSave,
 }: Props) {
@@ -36,29 +38,27 @@ export default function TaskModal({
     Task['priority']
   >(task?.priority ?? 'Medium')
 
-  const [project, setProject] = useState(
-    task?.project ?? 'Personal'
-  )
-
   const [status, setStatus] = useState<
     Task['status']
   >(task?.status ?? 'Pending')
+  const [saving, setSaving] = useState(false)
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    if (!title.trim()) return
 
-    if (!title.trim()) {
-      return
+    setSaving(true)
+    try {
+      await onSave({
+        title: title.trim(),
+        description: description.trim(),
+        dueDate,
+        priority,
+        status,
+      })
+    } finally {
+      setSaving(false)
     }
-
-    onSave({
-      title: title.trim(),
-      description: description.trim(),
-      dueDate,
-      priority,
-      project,
-      status,
-    })
   }
 
   return (
@@ -116,6 +116,7 @@ export default function TaskModal({
           className="task-form"
           onSubmit={handleSubmit}
         >
+          {error && <p className="form-error" role="alert">{error}</p>}
 
           {/* TITLE */}
           <div className="form-group">
@@ -130,7 +131,9 @@ export default function TaskModal({
                 setTitle(e.target.value)
               }
               placeholder="e.g. Finish project presentation"
+              maxLength={200}
               autoFocus
+              required
             />
           </div>
 
@@ -171,77 +174,21 @@ export default function TaskModal({
             </div>
           </div>
 
-          {/* TWO COLUMN FIELDS */}
-          <div className="form-two-column">
-
-            {/* PRIORITY */}
-            <div className="form-group">
-              <label htmlFor="task-priority">
-                Priority
-              </label>
-
-              <div className="select-with-icon">
-                <Flag size={17} />
-
-                <select
-                  id="task-priority"
-                  value={priority}
-                  onChange={(e) =>
-                    setPriority(
-                      e.target.value as Task['priority']
-                    )
-                  }
-                >
-                  <option value="Low">
-                    Low
-                  </option>
-
-                  <option value="Medium">
-                    Medium
-                  </option>
-
-                  <option value="High">
-                    High
-                  </option>
-                </select>
-              </div>
+          {/* PRIORITY */}
+          <div className="form-group">
+            <label htmlFor="task-priority">Priority</label>
+            <div className="select-with-icon">
+              <Flag size={17} />
+              <select
+                id="task-priority"
+                value={priority}
+                onChange={(e) => setPriority(e.target.value as Task['priority'])}
+              >
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
             </div>
-
-            {/* PROJECT */}
-            <div className="form-group">
-              <label htmlFor="task-project">
-                Project
-              </label>
-
-              <div className="select-with-icon">
-                <Folder size={17} />
-
-                <select
-                  id="task-project"
-                  value={project}
-                  onChange={(e) =>
-                    setProject(e.target.value)
-                  }
-                >
-                  <option value="Personal">
-                    Personal
-                  </option>
-
-                  <option value="College">
-                    College
-                  </option>
-
-                  <option value="Internship">
-                    Internship
-                  </option>
-
-                  <option value="Work">
-                    Work
-                  </option>
-                </select>
-              </div>
-            </div>
-
           </div>
 
           {/* STATUS WHEN EDITING */}
@@ -263,17 +210,8 @@ export default function TaskModal({
                 <option value="Pending">
                   Pending
                 </option>
-
-                <option value="In Progress">
-                  In Progress
-                </option>
-
                 <option value="Completed">
                   Completed
-                </option>
-
-                <option value="Overdue">
-                  Overdue
                 </option>
               </select>
             </div>
@@ -286,6 +224,7 @@ export default function TaskModal({
               type="button"
               className="modal-cancel-btn"
               onClick={onClose}
+              disabled={saving}
             >
               Cancel
             </button>
@@ -293,12 +232,11 @@ export default function TaskModal({
             <button
               type="submit"
               className="primary-btn modal-create-btn"
+              disabled={saving}
             >
               <Plus size={18} />
 
-              {task
-                ? 'Save changes'
-                : 'Create task'}
+              {saving ? 'Saving...' : task ? 'Save changes' : 'Create task'}
             </button>
 
           </div>

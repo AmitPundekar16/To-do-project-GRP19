@@ -1,5 +1,5 @@
 export type Priority = 'High' | 'Medium' | 'Low'
-export type TaskStatus = 'Pending' | 'In Progress' | 'Completed' | 'Overdue'
+export type TaskStatus = 'Pending' | 'Completed'
 
 export type Task = {
   id: number
@@ -8,5 +8,4 @@ export type Task = {
   dueDate: string
   priority: Priority
   status: TaskStatus
-  project: string
 }

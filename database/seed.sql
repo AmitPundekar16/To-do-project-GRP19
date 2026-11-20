@@ -34,10 +34,7 @@ PRAGMA foreign_keys = ON;
 --
 -- Three accounts covering both roles (user and admin).
 -- All accounts share the demo password:  Password123!
--- bcrypt hash (cost factor 12) of "Password123!":
---   $2b$12$eImiTXuWVxfM37uY4JANjQ==  <-- example placeholder format
---
--- Actual usable hashes generated with passlib bcrypt:
+-- A usable bcrypt hash of "Password123!" generated with passlib:
 -- ---------------------------------------------------------------------------
 
 INSERT OR IGNORE INTO users (id, name, email, password_hash, role, created_at) VALUES
@@ -45,7 +42,7 @@ INSERT OR IGNORE INTO users (id, name, email, password_hash, role, created_at) V
     1,
     'Alice Demo',
     'alice@example.com',
-    '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/lewFHV5NApP73Y93i',
+    '$2b$12$IiNWIb0zkCWXxWS0NxNjte76tqOKRgtPOOk3eqexzokandWIRkZ4K',
     'user',
     '2026-01-10 09:00:00'
 ),
@@ -53,7 +50,7 @@ INSERT OR IGNORE INTO users (id, name, email, password_hash, role, created_at) V
     2,
     'Bob Demo',
     'bob@example.com',
-    '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/lewFHV5NApP73Y93i',
+    '$2b$12$IiNWIb0zkCWXxWS0NxNjte76tqOKRgtPOOk3eqexzokandWIRkZ4K',
     'user',
     '2026-01-11 10:30:00'
 ),
@@ -61,7 +58,7 @@ INSERT OR IGNORE INTO users (id, name, email, password_hash, role, created_at) V
     3,
     'Admin User',
     'admin@example.com',
-    '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/lewFHV5NApP73Y93i',
+    '$2b$12$IiNWIb0zkCWXxWS0NxNjte76tqOKRgtPOOk3eqexzokandWIRkZ4K',
     'admin',
     '2026-01-09 08:00:00'
 );

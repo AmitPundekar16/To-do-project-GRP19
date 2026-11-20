@@ -1,673 +1,100 @@
-x# To-Do Project – GRP19
+# Taskly To-Do
 
-A simple To-Do application that allows users to register, log in, and manage their daily tasks.
+Taskly is a full-stack task manager. Users can register, sign in, and manage their own tasks through a React interface backed by a FastAPI API.
 
-The main goal is to build a full-stack application using React, FastAPI, and PostgreSQL while learning how frontend and backend development work together.
+## Features
 
----
+- Register and sign in with email and password.
+- Create, list, edit, complete, and delete tasks.
+- Set task descriptions, priorities, and due dates.
+- View task counts and completion progress on the dashboard.
+- Keep each user's tasks scoped to their account.
+- Admin endpoints for user and task management.
 
-## 1. Project Features
+## Technology
 
-- User registration and login.
-- Secure password storage using hashing.
-- JWT-based authentication.
-- Add new tasks.
-- View all tasks.
-- View individual tasks.
-- Update task details.
-- Delete tasks.
-- Change task status.
-- Each user can access only their own tasks.
+- **Frontend:** React, TypeScript, Vite, CSS
+- **Backend:** Python, FastAPI, SQLAlchemy
+- **Database:** SQLite by default for local development
+- **Authentication:** JWT bearer tokens
 
-### Task Status
-
-| Status | Meaning |
-|---|---|
-| `INCOMPLETE` | Task has not been completed. |
-| `PARTIALLY_COMPLETED` | Task is currently in progress. |
-| `COMPLETED` | Task has been completed. |
-
----
-
-## 2. Technology Stack
-
-| Part | Technology |
-|---|---|
-| Frontend | React, JavaScript, CSS |
-| Backend | Python, FastAPI |
-| Database | PostgreSQL |
-| ORM | SQLAlchemy |
-| Authentication | JWT |
-| API Testing | Postman / Swagger |
-| Version Control | Git and GitHub |
-
----
-
-## 3. Project Structure
-
-The following is our planned project structure. Every member should understand the purpose of their assigned files before making changes.
+## Project structure
 
 ```text
-To-do-project-GRP19/
-│
-├── frontend/                       # React application (Vikas)
-│   │
-│   ├── public/                     # Static files such as icons and images
-│   │
-│   ├── src/                        # Main frontend source code
-│   │   │
-│   │   ├── components/             # Reusable UI components
-│   │   │   ├── Navbar.jsx          # Navigation bar
-│   │   │   ├── TaskCard.jsx        # Displays a single task
-│   │   │   └── TaskForm.jsx        # Add/Edit task form
-│   │   │
-│   │   ├── pages/                  # Different application pages
-│   │   │   ├── Login.jsx           # User login page
-│   │   │   ├── Register.jsx        # User registration page
-│   │   │   ├── Dashboard.jsx       # Main dashboard
-│   │   │   ├── AddTask.jsx         # Add a new task
-│   │   │   ├── EditTask.jsx        # Edit an existing task
-│   │   │   └── TaskList.jsx        # Displays all tasks
-│   │   │
-│   │   ├── services/               # Functions for communicating with APIs
-│   │   │   └── api.js              # API requests to the backend
-│   │   │
-│   │   ├── App.jsx                 # Main React component and routing
-│   │   ├── main.jsx                # Frontend entry point
-│   │   └── index.css               # Global CSS styles
-│   │
-│   ├── package.json                # Frontend dependencies and scripts
-│   └── .env.example                # Example frontend environment variables
-│
-├── backend/                        # FastAPI application
-│   │
-│   ├── app/                        # Main backend application package
-│   │   │
-│   │   ├── main.py                 # Starts FastAPI and registers routers
-│   │   │
-│   │   ├── database.py             # Database connection and session setup
-│   │   │
-│   │   ├── models/                 # SQLAlchemy database models
-│   │   │   ├── user.py              # Users table structure
-│   │   │   └── task.py              # Tasks table structure
-│   │   │
-│   │   ├── schemas/                # Pydantic request/response validation
-│   │   │   ├── user.py              # User input and output formats
-│   │   │   └── task.py              # Task input and output formats
-│   │   │
-│   │   ├── routes/                 # API endpoint implementations
-│   │   │   ├── auth.py              # Registration and login APIs
-│   │   │   └── tasks.py             # Task management APIs
-│   │   │
-│   │   ├── services/               # Business logic and helper functions
-│   │   │   ├── auth_service.py      # Password hashing and token logic
-│   │   │   └── task_service.py      # Task-related operations (if needed)
-│   │   │
-│   │   └── dependencies.py         # Shared dependencies such as current user
-│   │
-│   ├── requirements.txt            # Python dependencies
-│   └── .env.example                # Example backend configuration
-│
-├── docs/                           # Project documentation
-│   └── API_DOCUMENTATION.md        # API endpoints and usage instructions
-│
-├── .gitignore                      # Files Git should not upload
-└── README.md                       # Project overview and instructions
+backend/
+  app/
+    main.py                 FastAPI application and routes
+    database.py             SQLAlchemy and SQLite configuration
+    models/                 User and task models
+    schemas/                Request and response schemas
+    routes/                 Authentication, task, and admin endpoints
+    services/               Authentication and authorization logic
+  make_admin.py             Promote an existing user to admin
+  requirements.txt
+frontend/
+  src/
+    App.tsx                 Main application and page state
+    pages/                  Sign-in, dashboard, and task list
+    components/              Sidebar and task form modal
+    lib/api.ts              API client and data mapping
+    styles.css              Application styles
+  styles/theme.css          Shared style tokens
+  package.json
+database/
+  schema.sql                SQLite schema reference
+  seed.sql                  Optional sample users and tasks
+docs/
+  API_DOCUMENTATION.md
+  test-cases.md
+  ui-ux/                    Design specs, style guide, and wireframes
 ```
 
-**Important:** This is the planned structure. Some files may be created later when required. Do not create unnecessary files just because they appear here.
+## Run locally on Windows
 
-### Which member works in which files?
+Install Python 3.10+ and Node.js. Use two terminals from the repository root.
 
-| File / Folder | Assigned To | Work |
-|---|---|---|
-| `backend/app/models/` | Amit | Design Users and Tasks database structure |
-| `backend/app/main.py` | Amit | Configure FastAPI and register routers |
-| `backend/app/schemas/` | Coordinate with Amit | Define API request and response formats |
-| `backend/app/routes/tasks.py` | Amit, Arathi | Implement task management APIs |
-| `backend/app/routes/auth.py` | Krishnaja | Implement registration and login |
-| `backend/app/database.py` | Krishnaja | Configure PostgreSQL connection |
-| `backend/app/services/auth_service.py` | Krishnaja | Password hashing and JWT-related logic |
-| `backend/app/dependencies.py` | Krishnaja | Authentication dependency for protected APIs |
-| `frontend/src/pages/` | Vikas | Develop React application pages |
-| `frontend/src/components/` | Vikas | Create reusable frontend components |
-| `frontend/src/services/api.js` | Arathi | Connect frontend with backend APIs |
-| `docs/` | Srysha | Testing notes and API documentation |
+### Backend
 
-**Note:** Amit will define the database structure first. Other backend members should follow the agreed structure instead of independently creating different database designs.
+In PowerShell:
 
----
-
-## 4. Team Members and Responsibilities
-
-### Amit – Database Design and Backend Setup
-
-**Responsibilities:**
-
-- Design the Users and Tasks database schema.
-- Define primary keys and foreign keys.
-- Define relationships between Users and Tasks.
-- Decide data types, constraints, and default values.
-- Set up the FastAPI project structure.
-- Configure `main.py`.
-- Register API routers.
-- Define API endpoints and request/response formats.
-- Coordinate backend development.
-
-### Amit and Arathi – Task Management APIs
-
-**Responsibilities:**
-
-- Implement the Add Task API.
-- Implement the View All Tasks API.
-- Implement the View Individual Task API.
-- Implement the Update Task API.
-- Implement the Delete Task API.
-- Implement the Update Task Status API.
-- Validate task information.
-- Ensure users can access only their own tasks.
-
-### Krishnaja – Authentication and Database
-
-**Responsibilities:**
-
-- Configure PostgreSQL connection.
-- Configure SQLAlchemy database sessions.
-- Implement user registration.
-- Implement user login.
-- Store passwords in a securely hashed format.
-- Generate and verify JWT tokens.
-- Create authentication dependencies.
-- Protect APIs from unauthenticated access.
-
-### Vikas – Frontend Development
-
-**Responsibilities:**
-
-- Develop the React application.
-- Create Login and Registration pages.
-- Create the Dashboard.
-- Create the Add Task page/form.
-- Create the Edit Task page/form.
-- Create the Task List.
-- Create reusable frontend components.
-- Design a simple and user-friendly interface.
-
-### Arathi – Frontend and Backend Integration
-
-**Responsibilities:**
-
-- Connect React frontend with FastAPI backend.
-- Send API requests from the frontend.
-- Handle API responses.
-- Handle authentication tokens.
-- Display backend errors properly.
-- Ensure frontend data is correctly exchanged with the backend.
-
-### Srysha – Testing and Documentation
-
-**Responsibilities:**
-
-- Test user registration and login.
-- Test task creation.
-- Test viewing individual and all tasks.
-- Test task updating and deletion.
-- Test all three task statuses.
-- Verify user-specific access.
-- Identify and report bugs.
-- Prepare testing documentation.
-
----
-
-## 5. Database Overview
-
-We will initially use two main tables.
-
-### Users Table
-
-Stores information about registered users.
-
-| Column | Purpose |
-|---|---|
-| `id` | Unique user ID and primary key |
-| `name` | User's name |
-| `email` | User's email (unique) |
-| `password` | Hashed password |
-| `created_at` | Account creation date and time |
-
-### Tasks Table
-
-Stores tasks created by users.
-
-| Column | Purpose |
-|---|---|
-| `id` | Unique task ID and primary key |
-| `title` | Task title |
-| `description` | Task details |
-| `status` | Task completion status |
-| `priority` | Task priority, if included |
-| `due_date` | Task deadline, if included |
-| `user_id` | Foreign key referencing Users |
-| `created_at` | Task creation date and time |
-| `updated_at` | Last update date and time |
-
-### Relationship
-
-One user can create multiple tasks.
-
-```text
-          USERS
-     ┌──────────────┐
-     │ id (PK)      │
-     │ name         │
-     │ email        │
-     │ password     │
-     └──────┬───────┘
-            │
-            │ One-to-Many
-            │
-     ┌──────▼───────┐
-     │ TASKS        │
-     │ id (PK)      │
-     │ title        │
-     │ description  │
-     │ status       │
-     │ user_id (FK) │
-     └──────────────┘
+```powershell
+cd backend
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
 ```
 
-**Important:** Every task must belong to a user. A user must never be able to view, update, or delete another user's tasks.
+The backend creates `backend/todo.db` automatically when started from the `backend` directory. Open `http://localhost:8000/docs` for the interactive API reference.
 
----
+### Frontend
 
-## 6. API Endpoints
+Open another terminal at the repository root:
 
-These are the planned API endpoints. Backend developers should follow this contract while implementing their APIs.
-
-### Authentication APIs – Member 5
-
-| Method | Endpoint | Purpose |
-|---|---|---|
-| POST | `/api/auth/register` | Register a new user |
-| POST | `/api/auth/login` | Login and receive JWT token |
-
-### Task APIs – Amit and Arathi
-
-| Method | Endpoint | Purpose |
-|---|---|---|
-| POST | `/api/tasks` | Create a task |
-| GET | `/api/tasks` | View all logged-in user's tasks |
-| GET | `/api/tasks/{id}` | View a particular task |
-| PUT | `/api/tasks/{id}` | Update task details |
-| PATCH | `/api/tasks/{id}/status` | Update task status |
-| DELETE | `/api/tasks/{id}` | Delete a task |
-
-**Important rules:**
-
-- Task APIs require JWT authentication.
-- The logged-in user's ID must be used to identify task ownership.
-- Never trust a user ID sent by the frontend to decide task ownership.
-- Return appropriate HTTP status codes and error messages.
-
----
-
-## 7. GitHub Collaboration Guide
-
-We will use Git and GitHub so everyone can work on their assigned tasks without directly changing the main project.
-
-### Branch Structure
-
-| Branch | Assigned Work |
-|---|---|
-| `main` | Final stable application |
-| `integration` | Combined team development |
-| `feature/database-api-setup` | Amit – Database design and FastAPI setup |
-| `feature/task-management` | Amit and Arathi – Task APIs |
-| `feature/auth-database` | Krishnaja – Authentication and database |
-| `feature/frontend` | Vikas – React frontend |
-| `feature/frontend-integration` | Arathi – Frontend/backend integration |
-| `feature/testing-docs` | Srysha – Testing and documentation |
-
-Amit will coordinate the integration branch. Since some members have more than one responsibility, coordinate before creating additional branches or changing shared files.
-
-### Step 1 – Install Git
-
-Download Git:
-
-https://git-scm.com/downloads
-
-Check installation:
-
-```bash
-git --version
+```powershell
+cd frontend
+npm.cmd ci
+npm.cmd run dev
 ```
 
-### Step 2 – Clone the Repository
+Open the Vite URL printed in the terminal, usually `http://localhost:5173`. Create an account on the sign-in screen; the app signs you in automatically. On later visits, sign in with that account.
 
-Every member should clone the repository:
+The frontend uses `http://localhost:8000/api` by default. To use a different backend address, set `VITE_API_URL` before starting Vite:
 
-```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/To-do-project-GRP19.git
+```powershell
+$env:VITE_API_URL = "http://localhost:8000/api"
 ```
 
-Enter the project folder:
+## Database and configuration
 
-```bash
-cd To-do-project-GRP19
+Local development uses SQLite and does not require manual database setup. `database/seed.sql` can add sample accounts and tasks after the database has been created; its demo password is `Password123!`.
+
+The backend reads `DATABASE_URL`, `SECRET_KEY`, and `ACCESS_TOKEN_EXPIRE_MINUTES` from the process environment. `backend/.env.example` is a reference file; the app does not load `.env` files automatically. The built-in JWT secret is for local development only and must be replaced for deployment.
+
+See [API documentation](docs/API_DOCUMENTATION.md) for implemented endpoints and fields.
+
+## Build the frontend
+
+```powershell
+cd frontend
+npm.cmd run build
 ```
-
-Replace `YOUR_GITHUB_USERNAME` with the repository owner's GitHub username.
-
-### Step 3 – Create the Integration Branch
-
-Amit should create the integration branch first:
-
-```bash
-git switch main
-git pull origin main
-git switch -c integration
-git push -u origin integration
-```
-
-### Step 4 – Create Your Feature Branch
-
-First, get the latest remote branches:
-
-```bash
-git fetch origin
-```
-
-Create your assigned branch from `integration`.
-
-Example for Vikas:
-
-```bash
-git switch -c feature/frontend origin/integration
-```
-
-Example for Krishnaja:
-
-```bash
-git switch -c feature/auth-database origin/integration
-```
-
-Use the branch assigned to your work.
-
-**What does this command do?**
-
-- `git switch -c` creates a new branch and switches to it.
-- `origin/integration` uses the remote integration branch as the starting point.
-- Your work stays separate from other members' work.
-
-### Step 5 – Save and Push Your Work
-
-Check modified files:
-
-```bash
-git status
-```
-
-Add your changes:
-
-```bash
-git add .
-```
-
-Commit your changes:
-
-```bash
-git commit -m "Add login page"
-```
-
-Push your branch for the first time:
-
-```bash
-git push -u origin YOUR_BRANCH_NAME
-```
-
-For example:
-
-```bash
-git push -u origin feature/frontend
-```
-
-After the first push:
-
-```bash
-git push
-```
-
-### Step 6 – Create a Pull Request
-
-After pushing your branch:
-
-1. Open the GitHub repository.
-2. Go to Pull Requests.
-3. Click New Pull Request.
-4. Select your feature branch as the source.
-5. Select `integration` as the target.
-6. Write a short description of your changes.
-7. Create the Pull Request.
-8. Inform Amit.
-
-Amit will review and merge the changes into `integration`.
-
-After the complete application is tested, the stable code will be merged into `main`.
-
----
-
-## 7. GitHub Collaboration Guide
-
-We will use Git and GitHub so everyone can work on their assigned tasks independently.
-
-### Branch Structure
-
-We will maintain three types of branches:
-
-| Branch | Purpose |
-|---|---|
-| `main` | Final stable application |
-| `integration` | Combines everyone's work |
-| Personal branch | Each member's individual work |
-
-### Branch Naming Convention
-
-Every member must create a branch using their own name.
-
-| Team Member | Branch Name |
-|---|---|
-| Amit | `amit` |
-| Arathi | `arathi` |
-| Vikas | `vikas` |
-| Krishnaja | `krishnaja` |
-| Srysha | `srysha` |
-
-**Important:** Use lowercase names without spaces.
-
-If a member has multiple responsibilities, they should complete all their assigned work in the same personal branch.
-
-### Step 1 – Install Git
-
-Download Git:
-
-https://git-scm.com/downloads
-
-Check installation:
-
-```bash
-git --version
-```
-
-### Step 2 – Clone the Repository
-
-Every member must clone the repository:
-
-```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/To-do-project-GRP19.git
-```
-
-Enter the project folder:
-
-```bash
-cd To-do-project-GRP19
-```
-
-Replace `YOUR_GITHUB_USERNAME` with the repository owner's GitHub username.
-
-### Step 3 – Create the Integration Branch
-
-Amit must create and push the integration branch first.
-
-```bash
-git switch main
-git pull origin main
-git switch -c integration
-git push -u origin integration
-```
-
-Other members should wait until the `integration` branch is available on GitHub.
-
-### Step 4 – Create Your Own Branch
-
-First, get the latest remote branches:
-
-```bash
-git fetch origin
-```
-
-Now create your personal branch from `origin/integration`.
-
-**Amit:**
-
-```bash
-git switch -c amit origin/integration
-```
-
-**Arathi:**
-
-```bash
-git switch -c arathi origin/integration
-```
-
-**Vikas:**
-
-```bash
-git switch -c vikas origin/integration
-```
-
-**Krishnaja:**
-
-```bash
-git switch -c member5 origin/integration
-```
-
-**Srysha:**
-
-```bash
-git switch -c srysha origin/integration
-```
-
-**What does this command do?**
-
-- `git switch -c` creates a new branch and switches to it.
-- The first name is your new personal branch.
-- `origin/integration` means your branch starts from the latest remote integration branch.
-- Everyone can now work independently.
-
-### Step 5 – Save and Push Your Work
-
-After making changes, check your files:
-
-```bash
-git status
-```
-
-Add your changes:
-
-```bash
-git add .
-```
-
-Commit your changes:
-
-```bash
-git commit -m "Add login functionality"
-```
-
-Push your personal branch to GitHub for the first time.
-
-Example for Vikas:
-
-```bash
-git push -u origin vikas
-```
-
-Example for Arathi:
-
-```bash
-git push -u origin arathi
-```
-
-For future updates, simply use:
-
-```bash
-git add .
-git commit -m "Update task functionality"
-git push
-```
-
-### Step 6 – Create a Pull Request
-
-After pushing your branch:
-
-1. Open the GitHub repository.
-2. Go to **Pull Requests**.
-3. Click **New Pull Request**.
-4. Select your personal branch as the source.
-5. Select `integration` as the target.
-6. Write a short description of your changes.
-7. Create the Pull Request.
-8. Inform Amit.
-
-Amit will review the code and merge the Pull Request into `integration`.
-
-After testing the complete application, the stable code will be merged into `main`.
-
-### Branch Workflow
-
-```text
-                    main
-                      |
-                 integration
-                      |
-          ┌───────────┼───────────┐
-          |           |           |
-         amit       arathi       vikas
-          |           |           |
-        Krishnaja      srysha       |
-          |           |           |
-          └───────────┴───────────┘
-                      |
-                Pull Requests
-                      |
-                 integration
-                      |
-                     main
-```
-
----
-
-## 8. Important Rules for Everyone
-
-1. Work only on your personal branch.
-2. Never push directly to `main`.
-3. Do not push directly to `integration`.
-4. Pull the latest changes before starting work.
-5. Commit your code regularly.
-6. Do not modify another member's assigned files without discussion.
-7. Coordinate before modifying shared files such as `main.py` and `database.py`.
-8. Never upload passwords, database credentials, or `.env` files to GitHub.
-9. Test your code before creating a Pull Request.
-10. If you face an error, share the complete error message with the team.
-11. Do not change API endpoints or request/response formats without informing the team.
-12. Ask questions whenever you are stuck. Everyone is learning.
