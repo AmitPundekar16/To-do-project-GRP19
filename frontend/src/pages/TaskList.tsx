@@ -40,7 +40,7 @@ export default function TaskList({
   const filtered = useMemo(() => {
     return tasks.filter((task) => {
       const matchesQuery =
-        `${task.title} ${task.project}`
+        `${task.title} ${task.description ?? ''}`
           .toLowerCase()
           .includes(query.toLowerCase())
 
@@ -181,12 +181,12 @@ export default function TaskList({
                   {task.title}
                 </strong>
 
-                <span>{task.project}</span>
+                {task.description && <span>{task.description}</span>}
               </div>
 
               <span className="due-date">
                 <CalendarDays size={13} />
-                {task.dueDate}
+                {task.dueDate || 'No due date'}
               </span>
 
               <span

@@ -25,12 +25,8 @@ export default function Dashboard({
     (task) => task.status === 'Completed'
   ).length
 
-  const inProgress = tasks.filter(
-    (task) => task.status === 'In Progress'
-  ).length
-
-  const overdue = tasks.filter(
-    (task) => task.status === 'Overdue'
+  const pending = tasks.filter(
+    (task) => task.status === 'Pending'
   ).length
 
   const progress =
@@ -50,7 +46,7 @@ export default function Dashboard({
           <div className="eyebrow">YOUR PRODUCTIVITY SPACE</div>
 
           <h1>
-            Good morning, Vikas <span className="wave">👋</span>
+            Welcome back <span className="wave">👋</span>
           </h1>
 
           <p>
@@ -112,16 +108,14 @@ export default function Dashboard({
             <TrendingUp size={19} />
           </div>
 
-          <div className="stat-label">
-            In Progress
-          </div>
+          <div className="stat-label">Pending</div>
 
           <div className="stat-value">
-            {inProgress}
+            {pending}
           </div>
 
           <div className="stat-description">
-            Currently working on
+            Tasks to complete
           </div>
         </div>
 
@@ -130,16 +124,14 @@ export default function Dashboard({
             <CalendarDays size={19} />
           </div>
 
-          <div className="stat-label">
-            Overdue
-          </div>
+          <div className="stat-label">Scheduled</div>
 
           <div className="stat-value">
-            {overdue}
+            {tasks.filter(task => task.dueDate && task.status === 'Pending').length}
           </div>
 
           <div className="stat-description">
-            Need your attention
+            Pending tasks with a due date
           </div>
         </div>
 
@@ -245,9 +237,6 @@ export default function Dashboard({
                         <CalendarDays size={13} />
                         <span>{task.dueDate}</span>
 
-                        <span className="meta-dot">•</span>
-
-                        <span>{task.project}</span>
                       </div>
 
                     </div>

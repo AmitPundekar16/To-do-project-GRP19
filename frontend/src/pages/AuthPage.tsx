@@ -1,28 +1,38 @@
 
-import { FormEvent, useState } from 'react'
-import {
-  CheckCircle2,
-  LockKeyhole,
-  Phone,
-} from 'lucide-react'
+import { useState } from 'react'
+import type { FormEvent } from 'react'
+import { CheckCircle2, LockKeyhole } from 'lucide-react'
+import { api } from '../lib/api'
 
 type Props = {
-  onLogin: (token: string) => void
+  onLogin: (token: string, remember: boolean) => void
+  authError?: string
 }
 
-export default function AuthPage({ onLogin }: Props) {
+export default function AuthPage({ onLogin, authError }: Props) {
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
   const [remember, setRemember] = useState(true)
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
-
-    localStorage.setItem('token', 'ui-demo-token')
-    onLogin('ui-demo-token')
+    setError('')
+    setSubmitting(true)
+    try {
+      if (mode === 'register') {
+        await api.register(name.trim(), email.trim(), password)
+      }
+      const result = await api.login(email.trim(), password)
+      onLogin(result.access_token, remember)
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : 'Unable to sign in.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -89,6 +99,12 @@ export default function AuthPage({ onLogin }: Props) {
               : 'Create an account and start organizing your day.'}
           </p>
 
+          {(error || authError) && (
+            <p className="form-error" role="alert">
+              {error || authError}
+            </p>
+          )}
+
           <form onSubmit={handleSubmit}>
 
             {mode === 'register' && (
@@ -125,6 +141,7 @@ export default function AuthPage({ onLogin }: Props) {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                minLength={6}
                 required
               />
             </div>
@@ -139,79 +156,20 @@ export default function AuthPage({ onLogin }: Props) {
                   />
                   Remember me
                 </label>
-
-                <a href="#" onClick={(e) => e.preventDefault()}>
-                  Forgot password?
-                </a>
               </div>
             )}
 
             <button
               type="submit"
               className="primary-btn login-submit"
+              disabled={submitting}
             >
-              {mode === 'login' ? 'Sign in' : 'Create account'}
+              {submitting
+                ? 'Please wait...'
+                : mode === 'login' ? 'Sign in' : 'Create account'}
             </button>
 
           </form>
-
-          <div className="divider">
-            OR CONTINUE WITH
-          </div>
-
-          {/* GOOGLE BUTTON */}
-          <button
-            type="button"
-            className="google-btn"
-          >
-            <svg
-              className="google-icon"
-              viewBox="0 0 48 48"
-              aria-hidden="true"
-            >
-              <path
-                fill="#4285F4"
-                d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15Z"
-              />
-              <path
-                fill="#34A853"
-                d="M24 44c5.5 0 10.1-1.8 13.5-4.8l-6.6-5.1c-1.8 1.2-4.1 1.9-6.9 1.9-5.3 0-9.8-3.6-11.4-8.4H5.8v5.2A20 20 0 0 0 24 44Z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M12.6 27.6a12 12 0 0 1 0-7.2v-5.2H5.8a20 20 0 0 0 0 17.6l6.8-5.2Z"
-              />
-              <path
-                fill="#EA4335"
-                d="M24 12c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 6 29.5 4 24 4A20 20 0 0 0 5.8 15.2l6.8 5.2C14.2 15.6 18.7 12 24 12Z"
-              />
-            </svg>
-
-            <span>Continue with Google</span>
-          </button>
-
-          {/* PHONE NUMBER FIELD */}
-          <div className="phone-section">
-            <div className="phone-divider">
-              OR USE PHONE NUMBER
-            </div>
-
-            <label htmlFor="auth-phone">
-              Phone number
-            </label>
-
-            <div className="phone-input">
-              <Phone size={18} />
-
-              <input
-                id="auth-phone"
-                type="tel"
-                placeholder="Enter your phone number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </div>
-          </div>
 
           {/* REGISTER / LOGIN SWITCH */}
           <div className="signup-text">
@@ -221,9 +179,10 @@ export default function AuthPage({ onLogin }: Props) {
 
             <button
               type="button"
-              onClick={() =>
+              onClick={() => {
                 setMode(mode === 'login' ? 'register' : 'login')
-              }
+                setError('')
+              }}
             >
               {mode === 'login' ? 'Create account' : 'Sign in'}
             </button>
