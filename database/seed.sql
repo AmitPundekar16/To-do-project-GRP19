@@ -1,5 +1,5 @@
 -- =============================================================================
--- To-Do App – Sample / Seed Data (SQLite)
+-- To-Do App – Sample / Seed Data (MySQL)
 -- Group 19
 --
 -- Purpose:
@@ -8,10 +8,10 @@
 --   manually register accounts or create tasks through the UI.
 --
 -- Safety:
---   • Uses INSERT OR IGNORE so the script is safe to run more than once –
+--   * Uses INSERT IGNORE so the script is safe to run more than once -
 --     it will NOT create duplicate rows.
---   • No real personal information is used anywhere.
---   • Password hashes below are bcrypt hashes of the string "Password123!"
+--   * No real personal information is used anywhere.
+--   * Password hashes below are bcrypt hashes of the string "Password123!"
 --     They were generated with passlib[bcrypt] and are safe for demo use.
 --     Never use a real password as seed data.
 --
@@ -24,10 +24,10 @@
 --   Run schema.sql first (or let the FastAPI app initialise the tables).
 --
 -- Usage:
---   sqlite3 backend/todo.db < database/seed.sql
+--   mysql -u root -p tododb < database/seed.sql
 -- =============================================================================
 
-PRAGMA foreign_keys = ON;
+USE tododb;
 
 -- ---------------------------------------------------------------------------
 -- Sample Users
@@ -37,7 +37,7 @@ PRAGMA foreign_keys = ON;
 -- A usable bcrypt hash of "Password123!" generated with passlib:
 -- ---------------------------------------------------------------------------
 
-INSERT OR IGNORE INTO users (id, name, email, password_hash, role, created_at) VALUES
+INSERT IGNORE INTO users (id, name, email, password_hash, role, created_at) VALUES
 (
     1,
     'Alice Demo',
@@ -67,7 +67,7 @@ INSERT OR IGNORE INTO users (id, name, email, password_hash, role, created_at) V
 -- Sample Tasks for Alice (user_id = 1)
 -- ---------------------------------------------------------------------------
 
-INSERT OR IGNORE INTO tasks (id, user_id, title, description, status, priority, due_date, created_at) VALUES
+INSERT IGNORE INTO tasks (id, user_id, title, description, status, priority, due_date, created_at) VALUES
 (
     1, 1,
     'Set up development environment',
@@ -113,7 +113,7 @@ INSERT OR IGNORE INTO tasks (id, user_id, title, description, status, priority, 
 -- Sample Tasks for Bob (user_id = 2)
 -- ---------------------------------------------------------------------------
 
-INSERT OR IGNORE INTO tasks (id, user_id, title, description, status, priority, due_date, created_at) VALUES
+INSERT IGNORE INTO tasks (id, user_id, title, description, status, priority, due_date, created_at) VALUES
 (
     6, 2,
     'Review task management API endpoints',

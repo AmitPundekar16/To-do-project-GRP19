@@ -1,5 +1,5 @@
 -- =============================================================================
--- To-Do App – Database Schema (SQLite)
+-- To-Do App – Database Schema (MySQL)
 -- Group 19
 --
 -- This file documents the database structure used by the FastAPI backend.
@@ -11,18 +11,19 @@
 --   * Recreate the database manually if needed (e.g. for testing or deployment)
 --   * Verify that the SQLAlchemy models and the real tables agree
 --
--- SQLite compatibility notes:
---   * SQLite stores INTEGER PRIMARY KEY as an auto-incrementing rowid alias.
---   * DEFAULT (strftime(...)) mimics SQLAlchemy's Python-side datetime default.
---   * FOREIGN KEY enforcement must be enabled per-connection with
---     PRAGMA foreign_keys = ON;
+-- MySQL compatibility notes:
+--   * AUTO_INCREMENT replaces SQLite's AUTOINCREMENT keyword.
+--   * DEFAULT CURRENT_TIMESTAMP replaces SQLite's strftime(...) default.
+--   * Foreign key enforcement is built-in with InnoDB engine (no PRAGMA needed).
+--   * ENGINE=InnoDB ensures full foreign key and transaction support.
 -- =============================================================================
 
 
 -- ---------------------------------------------------------------------------
--- Enable foreign-key enforcement (SQLite only)
+-- Create database (run once if not already created)
 -- ---------------------------------------------------------------------------
-PRAGMA foreign_keys = ON;
+CREATE DATABASE IF NOT EXISTS tododb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE tododb;
 
 
 -- ---------------------------------------------------------------------------
@@ -33,7 +34,7 @@ PRAGMA foreign_keys = ON;
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS users (
     -- Unique numeric ID, assigned automatically by the database
-    id            INTEGER      NOT NULL PRIMARY KEY AUTOINCREMENT,
+    id            INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
 
     -- Full display name supplied at registration (1-100 characters)
     name          VARCHAR(100) NOT NULL,
@@ -48,14 +49,15 @@ CREATE TABLE IF NOT EXISTS users (
     role          VARCHAR(20)  NOT NULL DEFAULT 'user',
 
     -- UTC timestamp set when the row is inserted
-    created_at    DATETIME     DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now'))
-);
+    created_at    DATETIME     DEFAULT CURRENT_TIMESTAMP
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Index on the primary key (created automatically, listed for clarity)
-CREATE INDEX IF NOT EXISTS ix_users_id ON users (id);
+CREATE INDEX ix_users_id ON users (id);
 
 -- Unique index on email (enforces the UNIQUE constraint and speeds up login lookup)
-CREATE UNIQUE INDEX IF NOT EXISTS ix_users_email ON users (email);
+CREATE UNIQUE INDEX ix_users_email ON users (email);
 
 
 -- ---------------------------------------------------------------------------
@@ -66,10 +68,10 @@ CREATE UNIQUE INDEX IF NOT EXISTS ix_users_email ON users (email);
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS tasks (
     -- Unique numeric ID, assigned automatically by the database
-    id          INTEGER      NOT NULL PRIMARY KEY AUTOINCREMENT,
+    id          INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
 
     -- Owner of this task - references users.id
-    user_id     INTEGER      NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    user_id     INT          NOT NULL,
 
     -- Short title summarising the task (1-200 characters, required)
     title       VARCHAR(200) NOT NULL,
@@ -89,11 +91,14 @@ CREATE TABLE IF NOT EXISTS tasks (
     due_date    DATE,
 
     -- UTC timestamp set when the row is inserted
-    created_at  DATETIME     DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now'))
-);
+    created_at  DATETIME     DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_tasks_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Index on the primary key
-CREATE INDEX IF NOT EXISTS ix_tasks_id ON tasks (id);
+CREATE INDEX ix_tasks_id ON tasks (id);
 
 -- Index to speed up "fetch all tasks for user X" queries (most common query)
-CREATE INDEX IF NOT EXISTS ix_tasks_user_id ON tasks (user_id);
+CREATE INDEX ix_tasks_user_id ON tasks (user_id);

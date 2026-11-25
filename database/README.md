@@ -1,8 +1,8 @@
 # Database Setup - Group 19
 
-This folder has the database files for our To-Do application. 
+This folder has the database files for our To-Do application.
 
-The backend is built with FastAPI and SQLAlchemy. By default, it connects to a local SQLite database (`todo.db`), which is created automatically when the backend starts.
+The backend is built with FastAPI and SQLAlchemy. It connects to a **MySQL** database. The database connection URL is configured via the `.env` file in the `backend/` folder.
 
 ---
 
@@ -42,30 +42,64 @@ Stores tasks created by users.
 
 ---
 
+## Prerequisites
+
+- **MySQL Server 8.0** installed and running on port `3306`
+- **Python packages:** `pymysql`, `cryptography`, `python-dotenv` (listed in `backend/requirements.txt`)
+
+Install them with:
+```bash
+pip install -r backend/requirements.txt
+```
+
+---
+
 ## How to Set Up
 
-### 1. Automatic Setup (Default)
-When you start the FastAPI backend:
+### 1. Create the MySQL database
+```powershell
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS tododb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+```
+
+### 2. Create the `.env` file
+Create a file called `.env` inside the `backend/` folder with:
+```env
+DATABASE_URL=mysql+pymysql://root:YOUR_PASSWORD@localhost:3306/tododb
+```
+> ⚠️ Replace `YOUR_PASSWORD` with your actual MySQL root password. Never commit this file to GitHub.
+
+### 3. Create the tables (run schema.sql)
+```powershell
+Get-Content database/schema.sql | mysql -u root -p tododb
+```
+
+### 4. Load sample data (run seed.sql)
+```powershell
+Get-Content database/seed.sql | mysql -u root -p tododb
+```
+
+### 5. Start the backend
 ```bash
 cd backend
-uvicorn app.main:app --reload
+python -m uvicorn app.main:app --reload --port 8000
 ```
-SQLAlchemy will automatically create `todo.db` with both tables.
+SQLAlchemy will connect to MySQL and the app will be ready.
 
-### 2. Adding Sample Data
-To load some test users and tasks, run:
-```bash
-sqlite3 backend/todo.db < database/seed.sql
-```
+---
 
-**Test accounts created:**
-- `alice@example.com` (user)
-- `bob@example.com` (user)
-- `admin@example.com` (admin)
-- Password for all 3: `Password123!`
+## Test Accounts
+
+All 3 demo accounts use the password: `Password123!`
+
+| Email | Role |
+|---|---|
+| alice@example.com | user |
+| bob@example.com | user |
+| admin@example.com | admin |
 
 ---
 
 ## Notes
-- Do not commit `.env` or `todo.db` to GitHub.
-- If you need to reset the database, just delete `todo.db` and start the backend again.
+- Do **not** commit `.env` to GitHub (it contains your MySQL password).
+- Do **not** commit `backend/todo.db` if it still exists locally (old SQLite file, no longer used).
+- If you need to reset the database, run `schema.sql` again after dropping the tables.
