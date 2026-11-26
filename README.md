@@ -15,7 +15,7 @@ Taskly is a full-stack task manager. Users can register, sign in, and manage the
 
 - **Frontend:** React, TypeScript, Vite, CSS
 - **Backend:** Python, FastAPI, SQLAlchemy
-- **Database:** SQLite by default for local development
+- **Database:** MySQL
 - **Authentication:** JWT bearer tokens
 
 ## Project structure
@@ -24,12 +24,13 @@ Taskly is a full-stack task manager. Users can register, sign in, and manage the
 backend/
   app/
     main.py                 FastAPI application and routes
-    database.py             SQLAlchemy and SQLite configuration
+    database.py             SQLAlchemy and MySQL configuration
     models/                 User and task models
     schemas/                Request and response schemas
     routes/                 Authentication, task, and admin endpoints
     services/               Authentication and authorization logic
   make_admin.py             Promote an existing user to admin
+  .env.example              Example environment configuration
   requirements.txt
 frontend/
   src/
@@ -41,8 +42,9 @@ frontend/
   styles/theme.css          Shared style tokens
   package.json
 database/
-  schema.sql                SQLite schema reference
+  schema.sql                MySQL schema reference
   seed.sql                  Optional sample users and tasks
+  README.md                 Detailed database setup guide
 docs/
   API_DOCUMENTATION.md
   test-cases.md
@@ -51,7 +53,7 @@ docs/
 
 ## Run locally on Windows
 
-Install Python 3.10+ and Node.js. Use two terminals from the repository root.
+Install Python 3.10+, Node.js, and MySQL Server 8.0. Use two terminals from the repository root.
 
 ### Backend
 
@@ -64,7 +66,7 @@ py -m venv .venv
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
 ```
 
-The backend creates `backend/todo.db` automatically when started from the `backend` directory. Open `http://localhost:8000/docs` for the interactive API reference.
+The backend connects to the configured MySQL database. Ensure MySQL is running, `backend/.env` is configured, and the `tododb` database has been created before starting the backend. Open `http://localhost:8000/docs` for the interactive API reference.
 
 ### Frontend
 
@@ -84,11 +86,48 @@ The frontend uses `http://localhost:8000/api` by default. To use a different bac
 $env:VITE_API_URL = "http://localhost:8000/api"
 ```
 
-## Database and configuration
+## Database and Configuration
 
-Local development uses SQLite and does not require manual database setup. `database/seed.sql` can add sample accounts and tasks after the database has been created; its demo password is `Password123!`.
+The application uses **MySQL** as its database. Ensure MySQL Server is installed and running before starting the backend.
 
-The backend reads `DATABASE_URL`, `SECRET_KEY`, and `ACCESS_TOKEN_EXPIRE_MINUTES` from the process environment. `backend/.env.example` is a reference file; the app does not load `.env` files automatically. The built-in JWT secret is for local development only and must be replaced for deployment.
+### Database Setup
+
+1. Open MySQL Workbench or the MySQL command-line client.
+2. Create the database:
+
+```sql
+CREATE DATABASE IF NOT EXISTS tododb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+3. Run the database schema file (`database/schema.sql`) to create the required tables and relationships.
+4. Run `database/seed.sql` if you want to insert sample accounts and tasks (demo password: `Password123!`).
+
+In Windows PowerShell:
+
+```powershell
+Get-Content database/schema.sql | mysql -u root -p tododb
+Get-Content database/seed.sql | mysql -u root -p tododb
+```
+
+See [database/README.md](database/README.md) for detailed database setup steps.
+
+### Backend Configuration
+
+The backend reads `DATABASE_URL`, `SECRET_KEY`, and `ACCESS_TOKEN_EXPIRE_MINUTES` from `backend/.env` (via `python-dotenv`) or the process environment:
+
+- `DATABASE_URL` – MySQL database connection URL
+- `SECRET_KEY` – Secret key used for authentication
+- `ACCESS_TOKEN_EXPIRE_MINUTES` – Token expiration time
+
+Copy `backend/.env.example` to `backend/.env` and update your MySQL credentials, or set it in PowerShell:
+
+```powershell
+$env:DATABASE_URL = "mysql+pymysql://root:your_password@localhost:3306/tododb"
+```
+
+Replace `root` and `your_password` with your MySQL username and password. *(If your password contains `@`, encode it as `%40`.)* Never commit `backend/.env` to GitHub.
+
+The built-in JWT secret is intended for local development only and must be replaced for deployment.
 
 See [API documentation](docs/API_DOCUMENTATION.md) for implemented endpoints and fields.
 
