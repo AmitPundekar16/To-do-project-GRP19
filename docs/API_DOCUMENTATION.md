@@ -116,6 +116,29 @@ Admin endpoints require a bearer token for a user with the `admin` role.
 
 Promote an existing user locally by running `python make_admin.py <email>` from the `backend` directory.
 
+## AI assistant
+
+`POST /api/ai/assistant` requires a bearer token and a backend `GEMINI_API_KEY`.
+The key is sent to Google from the backend and is not exposed to the browser.
+The assistant sends only the information needed for the selected action:
+
+| Action | Required fields | Information sent to Gemini |
+|---|---|---|
+| `task_breakdown` | `task_id` | The current user's selected task title and description |
+| `daily_plan` | none | Up to 30 of the current user's pending task titles, priorities, and due dates |
+| `task_suggestions` | `goal` (up to 1000 characters) | The entered goal |
+
+Example request:
+
+```json
+{
+  "action": "task_breakdown",
+  "task_id": 12
+}
+```
+
+The response contains the action and generated text. AI responses are suggestions only and are not saved as tasks automatically. If Gemini is not configured, the endpoint returns `503 Service Unavailable`.
+
 ## Common errors
 
 | Status | Meaning |

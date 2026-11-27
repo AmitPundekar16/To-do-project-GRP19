@@ -4,7 +4,7 @@ import { CheckCircle2, LockKeyhole } from 'lucide-react'
 import { api } from '../lib/api'
 
 type Props = {
-  onLogin: (token: string, remember: boolean) => void
+  onLogin: (token: string, role: 'user' | 'admin', remember: boolean) => void
   authError?: string
 }
 
@@ -27,7 +27,7 @@ export default function AuthPage({ onLogin, authError }: Props) {
         await api.register(name.trim(), email.trim(), password)
       }
       const result = await api.login(email.trim(), password)
-      onLogin(result.access_token, remember)
+      onLogin(result.access_token, result.role, remember)
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Unable to sign in.')
     } finally {

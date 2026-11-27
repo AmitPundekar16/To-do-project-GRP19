@@ -6,6 +6,7 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import type { Task } from '../types'
+import { isTaskOverdue } from '../lib/taskDates'
 
 type Props = {
   tasks: Task[]
@@ -27,6 +28,7 @@ export default function Dashboard({
   const pending = tasks.filter(
     (task) => task.status === 'Pending'
   ).length
+  const overdue = tasks.filter(isTaskOverdue).length
 
   const progress =
     tasks.length > 0
@@ -126,15 +128,15 @@ export default function Dashboard({
           </div>
 
           <div className="stat-label">
-            Scheduled
+            Overdue
           </div>
 
           <div className="stat-value">
-            {tasks.filter(task => task.dueDate).length}
+            {overdue}
           </div>
 
           <div className="stat-description">
-            Tasks with a due date
+            Pending tasks past their due date
           </div>
         </div>
 
@@ -238,7 +240,9 @@ export default function Dashboard({
 
                       <div className="dashboard-task-meta">
                         <CalendarDays size={13} />
-                        <span>{task.dueDate || 'No due date'}</span>
+                        <span className={isTaskOverdue(task) ? 'overdue' : ''}>
+                          {isTaskOverdue(task) ? 'Overdue · ' : ''}{task.dueDate || 'No due date'}
+                        </span>
                       </div>
 
                     </div>
@@ -287,7 +291,7 @@ export default function Dashboard({
                 background: `
                   radial-gradient(
                     circle at center,
-                    white 57%,
+                      var(--surface) 57%,
                     transparent 58%
                   ),
                   conic-gradient(
