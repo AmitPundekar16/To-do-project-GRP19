@@ -8,8 +8,11 @@ Taskly is a full-stack task manager. Users can register, sign in, and manage the
 - Create, list, edit, complete, and delete tasks.
 - Set task descriptions, priorities, and due dates.
 - View task counts and completion progress on the dashboard.
+- Track overdue tasks, get in-app notifications, and use dark mode.
+- Review progress reports, task calendars, and priority/status charts.
+- Use the AI assistant to break down tasks, plan a day, or suggest tasks.
 - Keep each user's tasks scoped to their account.
-- Admin endpoints for user and task management.
+- Admin dashboard for workspace users, tasks, and statistics.
 
 ## Technology
 
@@ -27,14 +30,14 @@ backend/
     database.py             SQLAlchemy and SQLite configuration
     models/                 User and task models
     schemas/                Request and response schemas
-    routes/                 Authentication, task, and admin endpoints
+    routes/                 Authentication, task, admin, and AI endpoints
     services/               Authentication and authorization logic
   make_admin.py             Promote an existing user to admin
   requirements.txt
 frontend/
   src/
     App.tsx                 Main application and page state
-    pages/                  Sign-in, dashboard, and task list
+    pages/                  Sign-in, user/admin dashboards, reports, calendar, and AI
     components/              Sidebar and task form modal
     lib/api.ts              API client and data mapping
     styles.css              Application styles
@@ -61,10 +64,13 @@ In PowerShell:
 cd backend
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+$env:GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
 ```
 
 The backend creates `backend/todo.db` automatically when started from the `backend` directory. Open `http://localhost:8000/docs` for the interactive API reference.
+
+The Gemini key is optional for the rest of the app, but required to use the AI assistant. Set it in the backend terminal before starting Uvicorn; it is never sent to the frontend. AI requests send the selected task's title/description, the current user's pending task titles/priorities/due dates, or the goal text you enter to Google's Gemini API. Do not include sensitive information in those task fields or goals.
 
 ### Frontend
 

@@ -1,19 +1,39 @@
-import type { Priority, Task, TaskStatus } from '../types'
+import type { Priority, Task, TaskStatus, UserRole } from '../types'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
 
 type AuthResponse = {
   access_token: string
   token_type: string
-  role: string
+  role: UserRole
 }
 
-type UserResponse = {
+export type AdminUser = {
   id: number
   name: string
   email: string
-  role: string
+  role: UserRole
   created_at: string | null
+}
+
+export type AdminTask = {
+  id: number
+  user_id: number
+  title: string
+  description: string | null
+  status: string
+  priority: string
+  due_date: string | null
+  created_at: string
+}
+
+export type AdminStats = {
+  total_registered_users: number
+  total_users: number
+  total_admins: number
+  total_tasks: number
+  completed_tasks: number
+  pending_tasks: number
 }
 
 type ApiTask = {
@@ -26,6 +46,7 @@ type ApiTask = {
 }
 
 type TaskInput = Omit<Task, 'id'>
+export type AiAction = 'task_breakdown' | 'daily_plan' | 'task_suggestions'
 
 const priorities: Record<ApiTask['priority'], Priority> = {
   low: 'Low',
@@ -104,7 +125,7 @@ function toApiTask(task: TaskInput) {
 
 export const api = {
   register: (name: string, email: string, password: string) =>
-    request<UserResponse>('/auth/register', {
+    request<AdminUser>('/auth/register', {
       method: 'POST',
       body: JSON.stringify({ name, email, password }),
     }),
@@ -114,6 +135,24 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     }),
+
+  getCurrentUser: () => request<AdminUser>('/auth/me'),
+
+  getAdminStats: () => request<AdminStats>('/admin/stats'),
+
+  getAdminUsers: () => request<AdminUser[]>('/admin/users'),
+
+  getAdminTasks: () => request<AdminTask[]>('/admin/tasks'),
+
+  updateUserRole: (userId: number, role: UserRole) =>
+    request<AdminUser>(`/admin/users/${userId}/role`, {
+      method: 'PUT',
+      body: JSON.stringify({ role }),
+    }),
+
+  deleteUser: async (userId: number) => {
+    await send(`/admin/users/${userId}`, { method: 'DELETE' })
+  },
 
   async getTasks() {
     const tasks = await request<ApiTask[]>('/tasks')
@@ -147,4 +186,10 @@ export const api = {
   async deleteTask(id: number) {
     await send(`/tasks/${id}`, { method: 'DELETE' })
   },
+
+  aiAssistant: (input: { action: AiAction; task_id?: number; goal?: string }) =>
+    request<{ action: AiAction; result: string }>('/ai/assistant', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    }),
 }

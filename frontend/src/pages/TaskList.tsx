@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 
 import type { Task } from '../types'
+import { isTaskOverdue } from '../lib/taskDates'
 
 type Props = {
   tasks: Task[]
@@ -31,7 +32,7 @@ export default function TaskList({
   const [query, setQuery] = useState('')
 
   const [filter, setFilter] = useState<
-    'All Tasks' | 'Active' | 'Completed'
+    'All Tasks' | 'Active' | 'Completed' | 'Overdue'
   >('All Tasks')
 
   const [priority, setPriority] =
@@ -44,11 +45,10 @@ export default function TaskList({
           .toLowerCase()
           .includes(query.toLowerCase())
 
-      const matchesFilter =
-        filter === 'All Tasks' ||
-        (filter === 'Completed'
-          ? task.status === 'Completed'
-          : task.status !== 'Completed')
+      const matchesFilter = filter === 'All Tasks'
+        || (filter === 'Completed' && task.status === 'Completed')
+        || (filter === 'Active' && task.status !== 'Completed')
+        || (filter === 'Overdue' && isTaskOverdue(task))
 
       const matchesPriority =
         priority === 'All priorities' ||
@@ -123,6 +123,7 @@ export default function TaskList({
               'All Tasks',
               'Active',
               'Completed',
+              'Overdue',
             ] as const
           ).map((tab) => (
             <button
@@ -151,7 +152,7 @@ export default function TaskList({
         <div className="full-task-list">
           {filtered.map((task) => (
             <div
-              className="full-task-row"
+              className={`full-task-row ${isTaskOverdue(task) ? 'overdue-task-row' : ''}`}
               key={task.id}
             >
               <button
@@ -163,7 +164,7 @@ export default function TaskList({
                 onClick={() =>
                   onToggle(task.id)
                 }
-                aria-label="Toggle task"
+                aria-label={task.status === 'Completed' ? 'Mark task pending' : 'Mark task complete'}
               >
                 {task.status === 'Completed' && (
                   <Check size={14} />
@@ -184,9 +185,9 @@ export default function TaskList({
                 {task.description && <span>{task.description}</span>}
               </div>
 
-              <span className="due-date">
+              <span className={`due-date ${isTaskOverdue(task) ? 'overdue' : ''}`}>
                 <CalendarDays size={13} />
-                {task.dueDate || 'No due date'}
+                {isTaskOverdue(task) ? 'Overdue · ' : ''}{task.dueDate || 'No due date'}
               </span>
 
               <span

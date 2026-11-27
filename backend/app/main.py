@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
 from app import models  # imports User and Task so their tables get created
-from app.routes import auth, tasks, admin
+from app.routes import auth, tasks, admin, ai
 
 Base.metadata.create_all(bind=engine)
 
@@ -33,11 +33,13 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api")
 app.include_router(tasks.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
+app.include_router(ai.router, prefix="/api")
 
 # Also register without /api prefix for convenience and Swagger OAuth2 redirects
 app.include_router(auth.router)
 app.include_router(tasks.router)
 app.include_router(admin.router)
+app.include_router(ai.router)
 
 @app.get("/")
 def root():
